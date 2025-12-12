@@ -1,0 +1,79 @@
+/* ===== GLOBAL STYLES ===== */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: lightblue;
+    color: #222;
+}
+
+/* Prevents blue overflow when scrolling */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* ===== SIMPLE BUTTON NAVIGATION ===== */
+nav {
+    padding: 10px;
+    text-align: left;
+}
+
+nav a {
+    color: white;
+    background: #1e5ed8;
+    padding: 6px 12px;
+    text-decoration: none;
+    margin-right: 10px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+nav a:hover {
+    background: #0d3fa5;
+}
+
+
+header {
+    text-align: center;
+    padding: 20px 0;
+    
+}
+
+
+.content-block,
+.video-block,
+.tableau-block {
+    width: 90%;
+    max-width: 900px;
+    margin: 25px auto;
+    padding: 15px;
+    border: 1px solid #ccc;
+    background:#f9f9f9;
+    border-radius: 5px;
+}
+
+
+.content-block img,
+.video-block iframe {
+    width: 100%;
+    max-width: 650px;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+}
+
+
+.tableau-block {
+    overflow-x: hidden;
+}
+
+.tableau-block object,
+.tableau-block iframe {
+    max-width: 100%;
+}
+
+
+footer {
+    text-align: center;
+    padding: 20px;
+}

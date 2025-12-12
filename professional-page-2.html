@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Professional Résumé – Weston Hopkins</title>
+
+  <!-- Link to the CSS file below -->
+  <link rel="stylesheet" href="resume.css">
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav class="top-nav">
+    <div class="nav-left">
+      <a class="home-btn" href="index.html">← Back to BYU Sports</a>
+    </div>
+
+    <div class="nav-right">
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link" href="blackjack.html">Game</a>
+      <a class="nav-link active" href="professional-page-2.html">Résumé</a>
+    </div>
+
+    <!-- mobile menu toggle for narrow screens -->
+    <button id="menuToggle" class="menu-toggle" aria-label="Toggle menu">☰</button>
+  </nav>
+
+  <!-- PAGE HEADER / HERO -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <h1>Weston Hopkins</h1>
+        <p class="subtitle">Marriot Business Student • Repair Technician • Leader • Athlete</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- RESUME CONTENT -->
+  <main class="container">
+
+    <!-- Profile card -->
+    <section class="profile-card">
+      <!-- tries headshot.jpg first; if that fails, uses fallback image (keeps your head visible) -->
+      <img class="profile-pic" id="profilePic"
+           src="headshot.JPG"
+           alt="Weston Hopkins"
+           onerror="this.onerror=null; this.src='13b3a1ca-e4db-4f05-bf2e-46a32422aa9f.JPG';">
+      <div class="profile-info">
+        <h2>Professional Resume</h2>
+        <p class="lead">Student at BYU Marriot School of Business • Technician • Team Leader • Competitive Swimmer</p>
+
+        <a class="download-btn" href="Resume.pdf" download>
+          <i class="fa-solid fa-download"></i> Download PDF Résumé
+        </a>
+      </div>
+    </section>
+
+    <!-- Two-column responsive resume body -->
+    <section class="resume-body">
+      <div class="left-col">
+
+        <div class="card">
+          <h3><i class="fa-solid fa-graduation-cap"></i> Education</h3>
+          <ul>
+            <li><strong>Brigham Young University (BYU)</strong> — Business School student (present)</li>
+            <li><strong>Hunter High School — Graduated with Honors</strong></li>
+            <li>Academic & Athletic Letters (Swimming)</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3><i class="fa-solid fa-briefcase"></i> Experience</h3>
+          <ul>
+            <li><strong>Metro Repair — Repair Technician</strong> (1.5 years): diagnostics, repair workflows, customer support.</li>
+            <li><strong>Leatherby’s Family Creamery</strong>: customer service, team operations.</li>
+            <li><strong>Lambert Growers Greenhouse</strong>: plant care and seasonal production.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3><i class="fa-solid fa-person-swimming"></i> Athletics</h3>
+          <ul>
+            <li>State swim meet participant — team placed <strong>6th</strong> overall</li>
+            <li>Individual placements: <strong>2nd, 7th, 4th, 10th</strong></li>
+            <li>High School: Athletic letter in swimming</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <aside class="right-col">
+
+        <div class="card">
+          <h3><i class="fa-solid fa-star"></i> Leadership</h3>
+          <ul>
+            <li><strong>Kansas Wichita Mission</strong> — Missionary leadership roles (training, supervision)</li>
+            <li><strong>Ward Leadership</strong> — Current local leadership role, coordinating service.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3><i class="fa-solid fa-screwdriver-wrench"></i> Skills</h3>
+
+          <div class="skill">
+            <div class="skill-label">Technical Repair</div>
+            <div class="skill-bar"><div style="width:90%"></div></div>
+          </div>
+
+          <div class="skill">
+            <div class="skill-label">Customer Service</div>
+            <div class="skill-bar"><div style="width:95%"></div></div>
+          </div>
+
+          <div class="skill">
+            <div class="skill-label">Leadership</div>
+            <div class="skill-bar"><div style="width:85%"></div></div>
+          </div>
+
+          <div class="skill">
+            <div class="skill-label">Problem Solving</div>
+            <div class="skill-bar"><div style="width:88%"></div></div>
+          </div>
+
+        </div>
+
+      </aside>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2025 Weston Hopkins • Built for class</p>
+  </footer>
+
+  <!-- small script to toggle mobile nav -->
+  <script>
+    (function(){
+      const menuBtn = document.getElementById('menuToggle');
+      const navRight = document.querySelector('.nav-right');
+      menuBtn.addEventListener('click', ()=> {
+        navRight.classList.toggle('open');
+      });
+    })();
+  </script>
+
+</body>
+</html>

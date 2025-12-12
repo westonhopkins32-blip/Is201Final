@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BYU Blackjack — Casino + BYU Theme</title>
+  <link rel="stylesheet" href="blackjack.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="left">
+      <a href="index.html" class="small-btn">← Back to BYU Sports</a>
+    </div>
+    <div class="title">BYU Blackjack</div>
+    <div class="right">
+      <a href="professional-page-2.html" class="small-btn">Résumé</a>
+    </div>
+  </header>
+
+  <main class="table-wrap">
+    <!-- Table area -->
+    <section class="table">
+      <div class="dealer-area">
+        <div class="label">Dealer</div>
+        <div id="dealer-cards" class="card-row"></div>
+        <div class="totals"><span id="dealer-total">--</span></div>
+      </div>
+
+      <div class="center-area">
+        <div class="balance-box">
+          <div>Balance: <strong id="balance">1000</strong> <span class="coin">●</span></div>
+          <div>Current Bet: <strong id="currentBet">0</strong></div>
+        </div>
+
+        <div class="chips">
+          <button class="chip" data-value="10">$10</button>
+          <button class="chip" data-value="25">$25</button>
+          <button class="chip" data-value="50">$50</button>
+          <button class="chip" data-value="100">$100</button>
+          <button class="chip" data-value="500">$500</button>
+          <button class="chip clear" id="clearBet">Clear</button>
+        </div>
+
+        <div class="controls">
+          <button id="dealBtn" class="big-btn" disabled>Deal</button>
+          <button id="hitBtn" class="big-btn" disabled>Hit</button>
+          <button id="standBtn" class="big-btn" disabled>Stand</button>
+          <button id="doubleBtn" class="big-btn" disabled>Double</button>
+          <button id="restartBtn" class="small-btn">Reset Bank</button>
+        </div>
+
+        <div id="message" class="message">Place a bet to start.</div>
+      </div>
+
+      <div class="player-area">
+        <div class="label">You</div>
+        <div id="player-cards" class="card-row"></div>
+        <div class="totals"><span id="player-total">--</span></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-note">
+    <div>BYU themed Blackjack • Betting & dealer hole card • Enjoy responsibly</div>
+  </footer>
+
+<script>
+/* Blackjack game logic with betting, dealer hole card, animations */
+(() => {
+  // DOM
+  const balanceEl = document.getElementById('balance');
+  const currentBetEl = document.getElementById('currentBet');
+  const dealerCardsEl = document.getElementById('dealer-cards');
+  const playerCardsEl = document.getElementById('player-cards');
+  const dealerTotalEl = document.getElementById('dealer-total');
+  const playerTotalEl = document.getElementById('player-total');
+  const messageEl = document.getElementById('message');
+
+  const chips = document.querySelectorAll('.chip');
+  const clearBetBtn = document.getElementById('clearBet');
+  const dealBtn = document.getElementById('dealBtn');
+  const hitBtn = document.getElementById('hitBtn');
+  const standBtn = document.getElementById('standBtn');
+  const doubleBtn = document.getElementById('doubleBtn');
+  const restartBtn = document.getElementById('restartBtn');
+
+  // State
+  let balance = 1000;
+  let currentBet = 0;
+  let deck = [];
+  let playerHand = [];
+  let dealerHand = [];
+  let dealerHoleIndex = 1; // dealer's second card (face-down)
+  let inRound = false;
+  let canDouble = false;
+
+  function updateUI() {
+    balanceEl.textContent = balance;
+    currentBetEl.textContent = currentBet;
+    dealBtn.disabled = currentBet === 0 || inRound;
+    hitBtn.disabled = !inRound;
+    standBtn.disabled = !inRound;
+    doubleBtn.disabled = !inRound || !canDouble || currentBet*2 > balance + currentBet; // can't double beyond bank
+  }
+
+  function createDeck() {
+    const suits = ['♠','♥','♦','♣'];
+    const values = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+    deck = [];
+    for (const s of suits) for (const v of values) deck.push({suit:s, value:v});
+    // shuffle
+    for (let i = deck.length-1; i>0; i--) {
+      const j = Math.floor(Math.random()*(i+1));
+      [deck[i],deck[j]] = [deck[j],deck[i]];
+    }
+  }
+
+  function cardValue(card) {
+    if (card.value === 'A') return 11;
+    if (['K','Q','J'].includes(card.value)) return 10;
+    return parseInt(card.value,10);
+  }
+
+  function calcTotal(hand) {
+    let total = hand.reduce((sum,c)=>sum+cardValue(c),0);
+    let aces = hand.filter(c=>c.value==='A').length;
+    while (total>21 && aces>0) { total -=10; aces--; }
+    return total;
+  }
+
+  function renderCard(card, faceDown=false) {
+    const div = document.createElement('div');
+    div.className = 'card';
+    if (faceDown) {
+      div.classList.add('card-back'); // BYU logo back
+      // the back will be styled by CSS; include data for flipping
+      div.dataset.back = 'true';
+    } else {
+      div.innerHTML = `<span class="card-val">${card.value}</span><span class="card-suit">${card.suit}</span>`;
+    }
+    return div;
+  }
+
+  function renderHands(revealDealer=false) {
+    // player
+    playerCardsEl.innerHTML = '';
+    playerHand.forEach(c => playerCardsEl.appendChild(renderCard(c,false)));
+    playerTotalEl.textContent = calcTotal(playerHand);
+
+    // dealer
+    dealerCardsEl.innerHTML = '';
+    dealerHand.forEach((c, idx) => {
+      // show hole card face down if still in round and not revealDealer
+      const faceDown = (idx === dealerHoleIndex && !revealDealer && inRound);
+      dealerCardsEl.appendChild(renderCard(c, faceDown));
+    });
+    if (revealDealer) {
+      dealerTotalEl.textContent = calcTotal(dealerHand);
+    } else {
+      const firstVal = cardValue(dealerHand[0]);
+      // if hole down, show partial or '?'
+      dealerTotalEl.textContent = inRound ? `${firstVal} + ?` : calcTotal(dealerHand);
+    }
+  }
+
+  function clearTable() {
+    playerHand = [];
+    dealerHand = [];
+    dealerCardsEl.innerHTML = '';
+    playerCardsEl.innerHTML = '';
+    dealerTotalEl.textContent = '--';
+    playerTotalEl.textContent = '--';
+  }
+
+  function placeBet(amount) {
+    if (inRound) return;
+    if (amount > balance) {
+      flashMessage('Not enough balance');
+      return;
+    }
+    currentBet += amount;
+    balance -= amount;
+    animateChip(amount);
+    updateUI();
+  }
+
+  function animateChip(value) {
+    // simple floating chip animation
+    const chip = document.createElement('div');
+    chip.className = 'chip-anim';
+    chip.textContent = `$${value}`;
+    document.body.appendChild(chip);
+    const rect = document.querySelector('.center-area')?.getBoundingClientRect();
+    chip.style.left = (window.innerWidth/2 - 40) + (Math.random()*60-30) + 'px';
+    chip.style.top = (rect ? rect.top+50 : 200) + 'px';
+    chip.animate([
+      { transform: 'translateY(0) scale(1)', opacity:1 },
+      { transform: 'translateY(-80px) scale(0.8)', opacity:0.6 }
+    ], { duration: 900 }).onfinish = () => chip.remove();
+  }
+
+  function flashMessage(txt, timeout=1800) {
+    messageEl.textContent = txt;
+    messageEl.classList.add('visible');
+    setTimeout(()=>{ messageEl.classList.remove('visible'); }, timeout);
+  }
+
+  // chip click handlers
+  chips.forEach(c => c.addEventListener('click', (e) => {
+    const v = parseInt(e.currentTarget.dataset.value,10);
+    placeBet(v);
+  }));
+  clearBetBtn.addEventListener('click', ()=>{
+    if (inRound) return;
+    balance += currentBet;
+    currentBet = 0;
+    updateUI();
+  });
+
+  // Deal logic
+  function deal() {
+    if (currentBet === 0 || inRound) return;
+    inRound = true;
+    canDouble = true;
+    createDeckIfNeeded();
+    clearTable();
+
+    // initial deal: player, dealer, player, dealer (dealer's second card is hole)
+    playerHand.push(deck.pop());
+    dealerHand.push(deck.pop());
+    playerHand.push(deck.pop());
+    dealerHand.push(deck.pop());
+
+    renderHands(false);
+    updateUI();
+
+    // immediate blackjack checks
+    const pTotal = calcTotal(playerHand);
+    const dTotal = calcTotal(dealerHand);
+    if (pTotal === 21) {
+      // player blackjack
+      setTimeout(()=>endRound('Blackjack! You win 1.5x', 'blackjack'), 800);
+    } else {
+      flashMessage('Your move: Hit, Stand, or Double');
+    }
+  }
+
+  function createDeckIfNeeded() {
+    if (!deck || deck.length < 15) createDeck();
+  }
+
+  function hit() {
+    if (!inRound) return;
+    playerHand.push(deck.pop());
+    renderHands(false);
+    canDouble = false; // double allowed only immediately after deal
+    const total = calcTotal(playerHand);
+    if (total > 21) {
+      setTimeout(()=>endRound('Busted! Dealer wins.'), 400);
+    }
+  }
+
+  function stand() {
+    if (!inRound) return;
+    // reveal dealer hole card then dealer draws to 17+
+    revealDealerThenPlay();
+  }
+
+  function doubleDown() {
+    if (!inRound || !canDouble) return;
+    if (balance < currentBet) {
+      flashMessage('Insufficient funds to double');
+      return;
+    }
+    // take double bet
+    balance -= currentBet;
+    currentBet *= 2;
+    // draw exactly one card to player and then stand
+    playerHand.push(deck.pop());
+    renderHands(false);
+    setTimeout(()=> {
+      if (calcTotal(playerHand) > 21) {
+        endRound('Busted after double. Dealer wins.');
+      } else {
+        revealDealerThenPlay();
+      }
+    }, 450);
+  }
+
+  function revealDealerThenPlay() {
+    // reveal hole card visually with flip animation
+    inRound = false; // pause input until dealer finishes
+    renderHands(true); // show hole face up
+    // small timed dealer play
+    setTimeout(()=> {
+      // dealer draws until 17 or more
+      while (calcTotal(dealerHand) < 17) {
+        dealerHand.push(deck.pop());
+      }
+      renderHands(true);
+      checkOutcome();
+    }, 600);
+  }
+
+  function checkOutcome() {
+    const p = calcTotal(playerHand);
+    const d = calcTotal(dealerHand);
+    if (p > 21) return endRound('You busted. Dealer wins.');
+    if (d > 21) return endRound('Dealer busted. You win!');
+    if (p > d) return endRound('You win!');
+    if (d > p) return endRound('Dealer wins.');
+    return endRound("Push (Tie).");
+  }
+
+  function endRound(msg, special) {
+    // handle payouts: blackjack pays 1.5x plus original bet, win pays 2x (original+win),
+    // push returns bet.
+    let payoutText = '';
+    if (special === 'blackjack') {
+      const winnings = Math.floor(currentBet * 1.5);
+      balance += currentBet + winnings;
+      payoutText = ` (+$${winnings})`;
+    } else if (msg.toLowerCase().includes('you win')) {
+      const winnings = currentBet;
+      balance += currentBet + winnings;
+      payoutText = ` (+$${winnings})`;
+    } else if (msg.toLowerCase().includes('push') || msg.toLowerCase().includes('tie')) {
+      balance += currentBet; // return bet
+      payoutText = ' (bet returned)';
+    } else {
+      // dealer wins => player loses bet
+      payoutText = '';
+    }
+
+    messageEl.textContent = msg + payoutText;
+    messageEl.classList.add('visible');
+    // reveal dealer
+    renderHands(true);
+
+    // reset round after short delay
+    setTimeout(()=> {
+      currentBet = 0;
+      inRound = false;
+      canDouble = false;
+      updateUI();
+    }, 1800);
+    updateUI();
+  }
+
+  function resetBank() {
+    balance = 1000;
+    currentBet = 0;
+    inRound = false;
+    createDeck();
+    clearTable();
+    updateUI();
+    flashMessage('Bank reset to $1000');
+  }
+
+  // wiring
+  dealBtn.addEventListener('click', deal);
+  hitBtn.addEventListener('click', hit);
+  standBtn.addEventListener('click', stand);
+  doubleBtn.addEventListener('click', doubleDown);
+  restartBtn.addEventListener('click', resetBank);
+
+  // keyboard support
+  window.addEventListener('keydown', (e)=>{
+    if (e.key === 'h' || e.key === 'H') hit();
+    if (e.key === 's' || e.key === 'S') stand();
+    if (e.key === 'd' || e.key === 'D') doubleDown();
+  });
+
+  // init
+  createDeck();
+  updateUI();
+})();
+</script>
+</body>
+</html>

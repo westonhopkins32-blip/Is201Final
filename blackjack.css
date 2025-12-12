@@ -1,0 +1,214 @@
+/* blackjack.css — Casino Modern + BYU theme */
+
+/* Basic reset */
+*{box-sizing:border-box}
+body {
+  margin:0;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background: radial-gradient(circle at 50% 0%, #07121a 0%, #061018 50%, #041017 100%);
+  color: #fff;
+}
+
+/* Topbar */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 18px;
+  background: linear-gradient(90deg,#032b52,#002547);
+  border-bottom: 3px solid rgba(255,255,255,0.03);
+}
+.topbar .title {
+  font-weight:700;
+  font-size:20px;
+  color: #dfefff;
+}
+.small-btn {
+  background: #003d7c;
+  color: #fff;
+  padding:8px 12px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:600;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+.small-btn:hover { transform: translateY(-2px); background:#0054b8; }
+
+/* Table wrap */
+.table-wrap{
+  padding:24px;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+}
+
+/* Table layout */
+.table{
+  width:980px;
+  background: linear-gradient(#05324a, #02202b);
+  border-radius:14px;
+  padding:24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  border: 2px solid rgba(255,255,255,0.03);
+}
+
+/* Dealer & Player areas */
+.dealer-area, .player-area {
+  text-align:center;
+  margin-bottom: 8px;
+}
+.label { font-weight:700; color:#dfefff; margin-bottom:8px; }
+
+/* center area */
+.center-area {
+  text-align:center;
+  margin:12px 0 20px 0;
+}
+
+/* balance box */
+.balance-box {
+  color:#f0f6ff;
+  margin-bottom:10px;
+  font-weight:600;
+}
+.balance-box .coin{ color: #ffcf33; margin-left:6px; }
+
+/* chips */
+.chips { margin:12px 0 14px 0; display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+.chip {
+  background: linear-gradient(180deg,#f8f9fa,#d7e5ff);
+  color: #0b2a51;
+  font-weight:700;
+  border-radius:50%;
+  width:64px;
+  height:64px;
+  border: 4px solid #ffffff;
+  cursor:pointer;
+  transition: transform .15s ease;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.45);
+}
+.chip:hover { transform: translateY(-6px) rotate(-6deg); }
+.chip.clear {
+  border-radius:8px;
+  width:auto;
+  padding:8px 12px;
+  background: rgba(255,255,255,0.08);
+  color:#fff;
+}
+
+/* big controls */
+.controls { margin:12px 0 6px 0; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+.big-btn {
+  background: linear-gradient(180deg,#ffd966,#ffb84d);
+  color: #0b2a51;
+  border: none;
+  padding:10px 16px;
+  border-radius:10px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.5);
+  transition: transform .14s ease, box-shadow .14s ease;
+}
+.big-btn:disabled { opacity:0.35; cursor:not-allowed; transform:none; box-shadow:none; }
+.big-btn:hover:not(:disabled){ transform: translateY(-6px); }
+
+/* message */
+.message {
+  margin-top:8px;
+  color:#dff3ff;
+  font-weight:700;
+  min-height:28px;
+  opacity:0.95;
+}
+.message.visible { animation: fadeMessage .8s ease; }
+
+/* card row */
+.card-row {
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  margin: 6px 0 8px 0;
+  min-height: 110px;
+}
+
+/* card style (front) */
+.card {
+  width:90px;
+  height:130px;
+  background:#fff;
+  color:#03121a;
+  border-radius:10px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:8px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+  transform-origin:center center;
+  transition: transform .22s cubic-bezier(.2,.8,.2,1);
+}
+.card .card-val { font-weight:900; font-size:20px; }
+.card .card-suit { font-size:22px; opacity:0.8; }
+
+/* card back — BYU logo center */
+.card-back {
+  position:relative;
+  background: linear-gradient(180deg,#002e5d,#003d7c);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border: 3px solid rgba(255,255,255,0.06);
+  overflow:hidden;
+}
+.card-back::before {
+  content: 'Y';
+  font-size:64px;
+  font-weight:900;
+  color:rgba(255,255,255,0.92);
+  text-shadow: 0 3px 0 rgba(0,0,0,0.35);
+  transform: rotate(-6deg);
+}
+/* decorative ring */
+.card-back::after {
+  content:'';
+  position:absolute;
+  width:70%;
+  height:70%;
+  border-radius:50%;
+  border: 2px dashed rgba(255,255,255,0.06);
+}
+
+/* totals */
+.totals { color:#dff3ff; font-weight:700; margin-top:6px; }
+
+/* footer */
+.footer-note { text-align:center; margin-top:18px; color: #a9cfe9; }
+
+/* chip animation element */
+.chip-anim {
+  position:fixed;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  background: #ffd966;
+  color:#002a4e;
+  padding:6px 10px;
+  border-radius:8px;
+  font-weight:800;
+  box-shadow:0 6px 12px rgba(0,0,0,0.6);
+  pointer-events:none;
+}
+
+/* small screens */
+@media (max-width: 720px) {
+  .table{ width:95%; padding:16px;}
+  .card { width:66px; height:96px; }
+  .chip { width:52px; height:52px; font-size:14px; }
+  .balance-box { font-size:14px; }
+}
+
+/* animations */
+@keyframes fadeMessage { 0% { transform:translateY(6px); opacity:0; } 100% { transform:none; opacity:1; } }

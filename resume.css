@@ -1,0 +1,151 @@
+/* ===== resume.css - polished style, responsive nav, keeps photo visible ===== */
+
+:root{
+  --byu-blue: #002e5d;
+  --accent: #0074e6;
+  --muted: #6b7280;
+  --card-bg: #ffffff;
+  --page-bg: #eef4fb;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: "Poppins", "Segoe UI", Arial, sans-serif;
+  background: var(--page-bg);
+  color:#17202a;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* NAV */
+.top-nav{
+  background:var(--byu-blue);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 18px;
+  position:sticky;
+  top:0;
+  z-index:999;
+}
+
+.nav-left, .nav-right { display:flex; align-items:center; gap:12px; }
+
+.home-btn{
+  color:white;
+  background:#0b5fc0;
+  padding:8px 12px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:600;
+}
+
+.nav-right .nav-link{
+  color:white;
+  text-decoration:none;
+  padding:8px 12px;
+  border-radius:8px;
+  background: rgba(255,255,255,0.06);
+  font-weight:600;
+}
+
+.nav-right .nav-link:hover{ background: rgba(255,255,255,0.12); }
+.nav-right .active{ background:#0092ff; }
+
+/* mobile menu button */
+.menu-toggle{
+  display:none;
+  background:transparent;
+  color:white;
+  border:0;
+  font-size:20px;
+  padding:6px 8px;
+}
+
+/* HERO */
+.hero{
+  padding:36px 16px;
+  background: linear-gradient(135deg,#0074e6 0%, #003d7c 100%);
+  color:white;
+  text-align:left;
+}
+.hero-inner{ max-width:1100px; margin:0 auto; }
+.hero h1{ margin:0; font-size:32px; letter-spacing:-0.5px; }
+.subtitle{ margin:6px 0 0 0; opacity:0.95; }
+
+/* LAYOUT */
+.container{ max-width:1100px; margin:28px auto; padding:0 16px; }
+
+/* PROFILE CARD */
+.profile-card{
+  background:var(--card-bg);
+  border-radius:14px;
+  padding:20px;
+  display:flex;
+  gap:20px;
+  align-items:center;
+  box-shadow:0 8px 24px rgba(3,12,30,0.08);
+}
+
+.profile-pic{
+  width:160px;
+  height:160px;
+  border-radius:50%;
+  object-fit:cover;
+  object-position:top center; /* keeps head visible */
+  border:5px solid #003d7c;
+  flex-shrink:0;
+}
+
+.profile-info h2{ margin:0 0 6px 0; color:var(--byu-blue); }
+.lead{ color:var(--muted); margin:6px 0 12px 0; }
+.download-btn{
+  display:inline-block;
+  background:var(--byu-blue);
+  color:white;
+  padding:10px 14px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:700;
+  transition:transform .18s ease, background .18s ease;
+}
+.download-btn:hover{ transform:translateY(-3px); background:var(--accent); }
+
+/* RESUME BODY - 2 columns */
+.resume-body{
+  display:grid;
+  grid-template-columns: 2fr 1fr;
+  gap:22px;
+  margin-top:20px;
+}
+
+.left-col, .right-col { display:flex; flex-direction:column; gap:18px; }
+
+/* CARD */
+.card{
+  background:var(--card-bg);
+  border-radius:12px;
+  padding:16px 18px;
+  box-shadow:0 6px 18px rgba(3,12,30,0.06);
+}
+.card h3{ margin:0 0 10px 0; color:var(--byu-blue); display:flex; gap:10px; align-items:center; }
+
+/* skills */
+.skill{ margin-bottom:12px; }
+.skill-label{ font-weight:600; margin-bottom:6px; }
+.skill-bar{ height:12px; background:#e6eefb; border-radius:999px; overflow:hidden; }
+.skill-bar div{ height:100%; background:var(--byu-blue); border-radius:999px; }
+
+/* FOOTER */
+.site-footer{ text-align:center; padding:22px 0; color:var(--muted); margin-top:28px; }
+
+/* RESPONSIVE */
+@media (max-width:900px){
+  .resume-body{ grid-template-columns: 1fr; }
+  .hero h1{ font-size:26px; }
+  .nav-right{ display:none; }
+  .menu-toggle{ display:block; }
+  .nav-right.open{ display:flex; position:absolute; right:12px; top:54px; background:var(--byu-blue); flex-direction:column; padding:10px; border-radius:10px; }
+  .nav-right.open .nav-link{ margin:6px 0; width:170px; text-align:center; }
+}
